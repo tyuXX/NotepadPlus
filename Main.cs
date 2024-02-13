@@ -1,12 +1,14 @@
+using NotepadPlus.Forms;
 using System.ComponentModel;
 using System.Diagnostics;
 using static NotepadPlus.Localizer;
+using static NotepadPlus.Extra;
 
 namespace NotepadPlus
 {
     public partial class Main : Form
     {
-        public Font font = new( "Monospaced", 11, FontStyle.Regular );
+        public Font font = new("Monospaced", 11, FontStyle.Regular);
         public Color TextBoxColor = Color.White;
         public Color TextColor = Color.Black;
         public Main()
@@ -14,93 +16,96 @@ namespace NotepadPlus
             InitializeComponent();
         }
 
-        private void NewToolStripMenuItem_Click( object sender, EventArgs e )
+        private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int i = 1;
             foreach (TabPage tp in textTabs.TabPages)
             {
-                if (tp.Text.Contains( i.ToString() ) && tp.Text.Contains( currentLang.GetString( "untitled" ) ))
+                if (tp.Text.Contains(i.ToString()) && tp.Text.Contains(currentLang.GetString("untitled")))
                 {
                     i++;
                 }
             }
-            TextedTabPage tabPage = new( this )
+            TextedTabPage tabPage = new(this)
             {
-                Tag = currentLang.GetString( "untitled" ),
-                Text = currentLang.GetString( "untitled" ) + ' ' + i
+                Tag = currentLang.GetString("untitled"),
+                Text = currentLang.GetString("untitled") + ' ' + i
             };
-            textTabs.TabPages.Add( tabPage );
+            textTabs.TabPages.Add(tabPage);
         }
 
-        private void saveToolStripMenuItem_Click( object sender, EventArgs e )
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveTabPage( (TextedTabPage)textTabs.SelectedTab );
+            SaveTabPage((TextedTabPage)textTabs.SelectedTab);
         }
 
-        private void OpenToolStripMenuItem_Click( object sender, EventArgs e )
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SetOp( "opening" );
+            SetOp("opening");
             if (oDig.ShowDialog() == DialogResult.OK)
             {
                 foreach (string str in oDig.FileNames)
                 {
-                    TextedTabPage tabPage = new( this )
+                    TextedTabPage tabPage = new(this)
                     {
                         Tag = str,
                         Text = str
                     };
-                    tabPage.richTextBox.Text = File.ReadAllText( str );
-                    textTabs.TabPages.Add( tabPage );
+                    tabPage.richTextBox.Text = File.ReadAllText(str);
+                    textTabs.TabPages.Add(tabPage);
                 }
             }
-            SetOp( "ready" );
+            SetOp("ready");
         }
 
-        private void TabControl1_SelectedIndexChanged( object sender, EventArgs e )
+        private void TabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (textTabs.TabPages.Count > 0)
             {
-                toolStripLabel3.Text = $"{currentLang.GetString( "file" )}:{textTabs.SelectedTab.Tag}";
+                toolStripLabel3.Text = $"{currentLang.GetString("file")}:{textTabs.SelectedTab.Tag}";
                 Text = $"Notepad+ [{textTabs.SelectedTab.Text}]";
             }
         }
 
-        private void Main_Load( object sender, EventArgs e )
+        private void Main_Load(object sender, EventArgs e)
         {
-            LoadAll( @".\langs" );
-            SetLang( "en-us" );
+            ToolStripMenuItem3_Click(sender, e);
+            SetLang("en-us");
+            toolStripComboBox1.Text = "en-us";
             textTabs.ContextMenuStrip = contextMenuStrip;
-            NewToolStripMenuItem_Click( this, e );
-            SetOp( "ready" );
-            //placeholder code
-            ((TextedTabPage)textTabs.SelectedTab).richTextBox.Text = strs;
+            NewToolStripMenuItem_Click(this, e);
+            SetOp("ready");
 
         }
-        internal void SetLang( string lang )
+        internal static void SetLang(string lang)
         {
-            currentLang = GetLang( lang );
+            currentLang = GetLang(lang);
+            if (currentLang != default)
+            {
+
+            }
             //todo load all stuff
         }
 
-        private void CloseToolStripMenuItem_Click( object sender, EventArgs e )
+        private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (textTabs.SelectedTab != null)
             {
-                textTabs.TabPages.Remove( textTabs.SelectedTab );
+                textTabs.TabPages.Remove(textTabs.SelectedTab);
             }
         }
 
-        private void SaveThisToolStripMenuItem_Click( object sender, EventArgs e )
+        private void SaveThisToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveToolStripMenuItem_Click( this, e );
+            SaveToolStripMenuItem_Click(this, e);
         }
 
-        private void saveAsToolStripMenuItem_Click( object sender, EventArgs e )
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveTabPageAs((TextedTabPage)textTabs.SelectedTab);
         }
 
-        private void FontToolStripMenuItem_Click( object sender, EventArgs e )
+        private void FontToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (fDig.ShowDialog() == DialogResult.OK)
             {
@@ -115,20 +120,20 @@ namespace NotepadPlus
             }
         }
 
-        private void CloseAllToolStripMenuItem_Click( object sender, EventArgs e )
+        private void CloseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SetOp( "closing" );
+            SetOp("closing");
             textTabs.TabPages.Clear();
-            NewToolStripMenuItem_Click( this, e );
-            SetOp( "ready" );
+            NewToolStripMenuItem_Click(this, e);
+            SetOp("ready");
         }
 
-        private void ContextMenuStrip_Opening( object sender, CancelEventArgs e )
+        private void ContextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
-            Point p = textTabs.PointToClient( Cursor.Position );
+            Point p = textTabs.PointToClient(Cursor.Position);
             for (int i = 0; i < textTabs.TabCount; i++)
             {
-                if (textTabs.GetTabRect( i ).Contains( p ))
+                if (textTabs.GetTabRect(i).Contains(p))
                 {
                     textTabs.SelectedIndex = i;
                     return;
@@ -137,7 +142,7 @@ namespace NotepadPlus
             e.Cancel = true;
         }
 
-        private void PageColorToolStripMenuItem_Click( object sender, EventArgs e )
+        private void PageColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (cDig.ShowDialog() == DialogResult.OK)
             {
@@ -151,7 +156,7 @@ namespace NotepadPlus
             }
         }
 
-        private void TextBoxColorToolStripMenuItem_Click( object sender, EventArgs e )
+        private void TextBoxColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (cDig.ShowDialog() == DialogResult.OK)
             {
@@ -163,7 +168,7 @@ namespace NotepadPlus
             }
         }
 
-        private void TextColorToolStripMenuItem_Click( object sender, EventArgs e )
+        private void TextColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (cDig.ShowDialog() == DialogResult.OK)
             {
@@ -174,42 +179,70 @@ namespace NotepadPlus
                 TextColor = cDig.Color;
             }
         }
-        private void SetOp( string str )
+        private void SetOp(string str)
         {
-            toolStripLabel4.Text = currentLang.GetString( "operation" ) + ':' + currentLang.GetString( str );
+            toolStripLabel4.Text = currentLang.GetString("operation") + ':' + currentLang.GetString(str);
         }
 
-        private void saveAllToolStripMenuItem_Click( object sender, EventArgs e )
+        private void SaveAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             foreach (TextedTabPage ttp in textTabs.TabPages)
             {
-                SaveTabPage( ttp );
+                SaveTabPage(ttp);
             }
         }
-        private void SaveTabPage( TextedTabPage tabPage )
+        private void SaveTabPage(TextedTabPage tabPage)
         {
-            if (tabPage.Tag is not null && File.Exists( tabPage.Tag.ToString() ))
+            if (tabPage.Tag is not null && File.Exists(tabPage.Tag.ToString()))
             {
-                SetOp( "saving" );
-                File.WriteAllText( tabPage.Tag.ToString(), tabPage.richTextBox.Text );
-                tabPage.Text = tabPage.Text.Replace( "*", string.Empty );
-                SetOp( "ready" );
+                SetOp("saving");
+#pragma warning disable CS8604 // Olasý null baþvuru baðýmsýz deðiþkeni.
+                File.WriteAllText(tabPage.Tag.ToString(), tabPage.richTextBox.Text);
+#pragma warning restore CS8604 // Olasý null baþvuru baðýmsýz deðiþkeni.
+                tabPage.Text = tabPage.Text.Replace("*", string.Empty);
+                SetOp("ready");
             }
             else
             {
-                SaveTabPageAs( tabPage );
+                SaveTabPageAs(tabPage);
             }
         }
-        private void SaveTabPageAs(TextedTabPage tabPage )
+        private void SaveTabPageAs(TextedTabPage tabPage)
         {
-            SetOp( "saving" );
+            SetOp("saving");
             if (sDig.ShowDialog() == DialogResult.OK)
             {
                 tabPage.Tag = sDig.FileName;
                 tabPage.Text = sDig.FileName;
-                File.WriteAllText( sDig.FileName, textTabs.SelectedTab.Controls[0].Text );
+                File.WriteAllText(sDig.FileName, textTabs.SelectedTab.Controls[0].Text);
             }
-            SetOp( "ready" );
+            SetOp("ready");
+        }
+
+        private void ToolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            LoadAll(@".\langs");
+            foreach (string str in _langs.Keys)
+            {
+                toolStripComboBox1.Items.Add(str);
+            }
+        }
+
+        private void ToolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetLang(toolStripComboBox1.SelectedItem.ToString());
+        }
+
+        private void ToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            foreach (Form form in Application.OpenForms)
+            {
+                if(form is AddLang)
+                {
+                    return;
+                }
+            }
+            OpenForm<AddLang>();
         }
     }
     public class TextedTabPage : TabPage

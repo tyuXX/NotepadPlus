@@ -1,9 +1,16 @@
 ﻿using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace NotepadPlus
 {
+    internal static class Extra
+    {
+        internal static T OpenForm<T>() where T : Form , new()
+        {
+            T form = new();
+            form.Show();
+            return form;
+        }
+    }
     internal static class Localizer
     {
         internal static Lang currentLang = new();
@@ -29,23 +36,28 @@ namespace NotepadPlus
         internal Dictionary<string, string> _strings = new();
         internal static Lang GetFromFile( string filePath )
         {
+            Lang lang = new();
             try
             {
-                if (File.Exists( filePath ))
+                if (File.Exists(filePath))
                 {
-                    Lang lang = new();
-                    string[] tmp = File.ReadAllLines( filePath );
+
+                    string[] tmp = File.ReadAllLines(filePath);
                     foreach (string str in tmp)
                     {
-                        string[] strs = str.Replace( "[", string.Empty ).Replace( "]", string.Empty ).Split( ',' );
-                        lang._strings.Add( strs[0], strs[1] );
+                        string[] strs = str.Replace("[", string.Empty).Replace("]", string.Empty).Split(',');
+                        if(strs.Length is not 2)
+                        {
+                            break;
+                        }
+                        lang._strings.Add(strs[0], strs[1]);
                     }
                 }
-                return new();
+                return lang;
             }
-            catch(Exception)
+            catch (Exception)
             {
-                return new();
+                return lang;
             }
         }
         internal void WriteToFile(string filePath)
