@@ -10,6 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include=".npl\en-us.npl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include=".npl\tr-tr.npl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -25,12 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="langs\en-us.npl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="langs\tr-tr.npl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Folder Include=".npl\caches\opened\" />
+    <Folder Include=".npl\caches\tmp\" />
   </ItemGroup>
 
 </Project>

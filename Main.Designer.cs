@@ -44,7 +44,7 @@
             toolStripMenuItem3 = new ToolStripMenuItem();
             toolStripMenuItem2 = new ToolStripMenuItem();
             toolStripSeparator4 = new ToolStripSeparator();
-            toolStripComboBox1 = new ToolStripComboBox();
+            langSelector = new ToolStripComboBox();
             fontToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator3 = new ToolStripSeparator();
             pageColorToolStripMenuItem = new ToolStripMenuItem();
@@ -153,7 +153,7 @@
             // 
             // toolStripMenuItem1
             // 
-            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItem3, toolStripMenuItem2, toolStripSeparator4, toolStripComboBox1 });
+            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { toolStripMenuItem3, toolStripMenuItem2, toolStripSeparator4, langSelector });
             toolStripMenuItem1.Name = "toolStripMenuItem1";
             toolStripMenuItem1.Size = new Size(180, 22);
             toolStripMenuItem1.Text = "Localization";
@@ -163,7 +163,7 @@
             toolStripMenuItem3.Name = "toolStripMenuItem3";
             toolStripMenuItem3.Size = new Size(181, 22);
             toolStripMenuItem3.Text = "Refresh";
-            toolStripMenuItem3.Click += ToolStripMenuItem3_Click;
+            toolStripMenuItem3.Click += RefreshLangs_Click;
             // 
             // toolStripMenuItem2
             // 
@@ -177,11 +177,11 @@
             toolStripSeparator4.Name = "toolStripSeparator4";
             toolStripSeparator4.Size = new Size(178, 6);
             // 
-            // toolStripComboBox1
+            // langSelector
             // 
-            toolStripComboBox1.Name = "toolStripComboBox1";
-            toolStripComboBox1.Size = new Size(121, 23);
-            toolStripComboBox1.SelectedIndexChanged += ToolStripComboBox1_SelectedIndexChanged;
+            langSelector.Name = "langSelector";
+            langSelector.Size = new Size(121, 23);
+            langSelector.SelectedIndexChanged += LangSelector_SelectedIndexChanged;
             // 
             // fontToolStripMenuItem
             // 
@@ -298,6 +298,7 @@
             saveThisAsToolStripMenuItem.Name = "saveThisAsToolStripMenuItem";
             saveThisAsToolStripMenuItem.Size = new Size(138, 22);
             saveThisAsToolStripMenuItem.Text = "Save This As";
+            saveThisAsToolStripMenuItem.Click += saveThisAsToolStripMenuItem_Click;
             // 
             // closeToolStripMenuItem
             // 
@@ -362,7 +363,7 @@
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem toolStripMenuItem2;
-        private ToolStripComboBox toolStripComboBox1;
+        private ToolStripComboBox langSelector;
         private ToolStripSeparator toolStripSeparator3;
         private ToolStripMenuItem toolStripMenuItem3;
         private ToolStripSeparator toolStripSeparator4;

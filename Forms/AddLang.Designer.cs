@@ -37,6 +37,7 @@
             textBox3 = new TextBox();
             button4 = new Button();
             textBox4 = new TextBox();
+            button5 = new Button();
             SuspendLayout();
             // 
             // listBox1
@@ -57,7 +58,7 @@
             button1.TabIndex = 1;
             button1.Text = "Add";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            button1.Click += Button1_Click;
             // 
             // textBox1
             // 
@@ -81,7 +82,7 @@
             button2.TabIndex = 4;
             button2.Text = "Remove";
             button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            button2.Click += Button2_Click;
             // 
             // button3
             // 
@@ -91,7 +92,7 @@
             button3.TabIndex = 5;
             button3.Text = "Save As";
             button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
+            button3.Click += Button3_Click;
             // 
             // textBox3
             // 
@@ -108,7 +109,7 @@
             button4.TabIndex = 7;
             button4.Text = "Open";
             button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
+            button4.Click += Button4_Click;
             // 
             // textBox4
             // 
@@ -117,11 +118,22 @@
             textBox4.Size = new Size(254, 23);
             textBox4.TabIndex = 8;
             // 
+            // button5
+            // 
+            button5.Location = new Point(93, 321);
+            button5.Name = "button5";
+            button5.Size = new Size(75, 23);
+            button5.TabIndex = 9;
+            button5.Text = "Clear";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += Button5_Click;
+            // 
             // AddLang
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(359, 415);
+            Controls.Add(button5);
             Controls.Add(textBox4);
             Controls.Add(button4);
             Controls.Add(textBox3);
@@ -149,5 +161,6 @@
         private TextBox textBox3;
         private Button button4;
         private TextBox textBox4;
+        private Button button5;
     }
 }

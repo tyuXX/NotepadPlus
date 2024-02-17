@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using NotepadPlus.Forms;
+using System.Text;
 
 namespace NotepadPlus
 {
@@ -6,9 +7,17 @@ namespace NotepadPlus
     {
         internal static T OpenForm<T>() where T : Form , new()
         {
-            T form = new();
-            form.Show();
-            return form;
+            foreach (Form form in Application.OpenForms)
+            {
+                if (form is T rt)
+                {
+                    form.Focus();
+                    return rt;
+                }
+            }
+            T rtn = new();
+            rtn.Show();
+            return rtn;
         }
     }
     internal static class Localizer
@@ -22,7 +31,7 @@ namespace NotepadPlus
                 FileInfo fi = new(str);
                 if (fi.Name.Contains(".npl"))
                 {
-                    _langs.Add( fi.Name.Replace(".npl",string.Empty), Lang.GetFromFile( str ) );
+                    _langs.TryAdd( fi.Name.Replace(".npl",string.Empty), Lang.GetFromFile( str ) );
                 }
             }
         }

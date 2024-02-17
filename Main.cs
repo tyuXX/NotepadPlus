@@ -69,12 +69,16 @@ namespace NotepadPlus
 
         private void Main_Load(object sender, EventArgs e)
         {
-            ToolStripMenuItem3_Click(sender, e);
+            RefreshLangs_Click(sender, e);
             SetLang("en-us");
-            toolStripComboBox1.Text = "en-us";
+            langSelector.Text = "en-us";
             textTabs.ContextMenuStrip = contextMenuStrip;
             NewToolStripMenuItem_Click(this, e);
             SetOp("ready");
+            if (!Directory.Exists(@".\.npl\caches"))
+            {
+                Directory.CreateDirectory(@".\.npl\caches");
+            }
 
         }
         internal static void SetLang(string lang)
@@ -82,9 +86,8 @@ namespace NotepadPlus
             currentLang = GetLang(lang);
             if (currentLang != default)
             {
-
+                //todo load all stuff
             }
-            //todo load all stuff
         }
 
         private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -97,7 +100,7 @@ namespace NotepadPlus
 
         private void SaveThisToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveToolStripMenuItem_Click(this, e);
+            SaveTabPage((TextedTabPage)textTabs.SelectedTab);
         }
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -196,9 +199,9 @@ namespace NotepadPlus
             if (tabPage.Tag is not null && File.Exists(tabPage.Tag.ToString()))
             {
                 SetOp("saving");
-#pragma warning disable CS8604 // Olasý null baþvuru baðýmsýz deðiþkeni.
+#pragma warning disable CS8604
                 File.WriteAllText(tabPage.Tag.ToString(), tabPage.richTextBox.Text);
-#pragma warning restore CS8604 // Olasý null baþvuru baðýmsýz deðiþkeni.
+#pragma warning restore CS8604
                 tabPage.Text = tabPage.Text.Replace("*", string.Empty);
                 SetOp("ready");
             }
@@ -219,30 +222,31 @@ namespace NotepadPlus
             SetOp("ready");
         }
 
-        private void ToolStripMenuItem3_Click(object sender, EventArgs e)
+        private void RefreshLangs_Click(object sender, EventArgs e)
         {
-            LoadAll(@".\langs");
+            LoadAll(@".\.npl");
+            langSelector.Items.Clear();
             foreach (string str in _langs.Keys)
             {
-                toolStripComboBox1.Items.Add(str);
+                langSelector.Items.Add(str);
             }
         }
 
-        private void ToolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void LangSelector_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetLang(toolStripComboBox1.SelectedItem.ToString());
+#pragma warning disable CS8604
+            SetLang(langSelector.SelectedItem.ToString());
+#pragma warning restore CS8604
         }
 
         private void ToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            foreach (Form form in Application.OpenForms)
-            {
-                if(form is AddLang)
-                {
-                    return;
-                }
-            }
             OpenForm<AddLang>();
+        }
+
+        private void saveThisAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveTabPageAs((TextedTabPage)textTabs.SelectedTab);
         }
     }
     public class TextedTabPage : TabPage
