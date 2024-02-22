@@ -1,8 +1,9 @@
 using NotepadPlus.Forms;
 using System.ComponentModel;
 using System.Diagnostics;
-using static NotepadPlus.Localizer;
-using static NotepadPlus.Extra;
+using static NotepadPlus.Procs.Localizer;
+using static NotepadPlus.Procs.Extra;
+using NotepadPlus.Procs;
 
 namespace NotepadPlus
 {
@@ -26,12 +27,34 @@ namespace NotepadPlus
                     i++;
                 }
             }
-            TextedTabPage tabPage = new(this)
-            {
-                Tag = currentLang.GetString("untitled"),
-                Text = currentLang.GetString("untitled") + ' ' + i
+            NewTextedTab(currentLang.GetString("untitled"), currentLang.GetString("untitled") + ' ' + i);
+        }
+        internal TextedTabPage NewTextedTab(string text, object tag)
+        {
+            TextedTabPage ttp = new(this) 
+            { 
+                Text = text, 
+                Tag = tag 
             };
-            textTabs.TabPages.Add(tabPage);
+            if (File.Exists(tag.ToString()))
+            {
+#pragma warning disable CS8604
+                ttp.richTextBox.Text = File.ReadAllText(tag.ToString());
+                ttp.Text = new FileInfo(ttp.Tag.ToString()).Name;
+#pragma warning restore CS8604
+            }
+            else
+            {
+                string cachepath = $".\\.npl\\caches\\tmp\\{ttp._uid}.npltmp";
+                ttp.Tag = cachepath;
+            }
+            textTabs.TabPages.Add(ttp);
+            File.WriteAllText($".\\.npl\\caches\\{ttp._uid}.onpl",ttp.Tag.ToString() + "\ntrue");
+            return ttp;
+        }
+        internal void CloseTab(TextedTabPage textedTabPage)
+        {
+            File.Delete($".\\.npl\\caches\\{textedTabPage._uid}.onpl");
         }
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -46,13 +69,7 @@ namespace NotepadPlus
             {
                 foreach (string str in oDig.FileNames)
                 {
-                    TextedTabPage tabPage = new(this)
-                    {
-                        Tag = str,
-                        Text = str
-                    };
-                    tabPage.richTextBox.Text = File.ReadAllText(str);
-                    textTabs.TabPages.Add(tabPage);
+                    NewTextedTab(str,str);
                 }
             }
             SetOp("ready");
@@ -69,15 +86,16 @@ namespace NotepadPlus
 
         private void Main_Load(object sender, EventArgs e)
         {
+            Thread.CurrentThread.Name = "Notepad+ Main";
             RefreshLangs_Click(sender, e);
             SetLang("en-us");
             langSelector.Text = "en-us";
             textTabs.ContextMenuStrip = contextMenuStrip;
             NewToolStripMenuItem_Click(this, e);
             SetOp("ready");
-            if (!Directory.Exists(@".\.npl\caches"))
+            if (!Directory.Exists(@".\.npl\caches\tmp"))
             {
-                Directory.CreateDirectory(@".\.npl\caches");
+                Directory.CreateDirectory(@".\.npl\caches\tmp");
             }
 
         }
@@ -198,6 +216,11 @@ namespace NotepadPlus
         {
             if (tabPage.Tag is not null && File.Exists(tabPage.Tag.ToString()))
             {
+                if (tabPage.Tag.ToString().Contains(".\\.npl\\caches\\tmp\\"))
+                {
+                    SaveTabPageAs(tabPage);
+                    return;
+                }
                 SetOp("saving");
 #pragma warning disable CS8604
                 File.WriteAllText(tabPage.Tag.ToString(), tabPage.richTextBox.Text);
@@ -215,6 +238,10 @@ namespace NotepadPlus
             SetOp("saving");
             if (sDig.ShowDialog() == DialogResult.OK)
             {
+                if (tabPage.Tag.ToString().Contains(".\\.npl\\caches\\tmp\\"))
+                {
+                    File.Delete(tabPage.Tag.ToString());
+                }
                 tabPage.Tag = sDig.FileName;
                 tabPage.Text = sDig.FileName;
                 File.WriteAllText(sDig.FileName, textTabs.SelectedTab.Controls[0].Text);
@@ -251,10 +278,12 @@ namespace NotepadPlus
     }
     public class TextedTabPage : TabPage
     {
+        public UUID _uid;
         public Main mainform;
         public RichTextBox richTextBox = new();
         public TextedTabPage( Main mf )
         {
+            _uid = new();
             mainform = mf;
             richTextBox.Dock = DockStyle.Fill;
             richTextBox.Font = mainform.font;

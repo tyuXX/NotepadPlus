@@ -1,8 +1,24 @@
-﻿using NotepadPlus.Forms;
-using System.Text;
+﻿using System.Text;
 
-namespace NotepadPlus
+namespace NotepadPlus.Procs
 {
+    public struct UUID
+    {
+        private readonly Guid[] _ids;
+        public UUID()
+        {
+            _ids = new Guid[4];
+        }
+        public override string ToString()
+        {
+            StringBuilder sb = new();
+            foreach (Guid id in _ids) 
+            { 
+                sb.Append(id.ToString());
+            }
+            return sb.ToString();
+        }
+    }
     internal static class Extra
     {
         internal static T OpenForm<T>() where T : Form , new()
@@ -18,6 +34,24 @@ namespace NotepadPlus
             T rtn = new();
             rtn.Show();
             return rtn;
+        }
+    }
+    internal static class Logger
+    {
+        internal static StringBuilder _log = new();
+        internal static void Log(string msg, LogLevel level = LogLevel.Info)
+        {
+            if (_log.Length > 0) 
+            {
+                _log.Append($"[{level.ToString()}/{Thread.CurrentThread}/{DateTime.Now}]:{msg}");
+            }
+        }
+        internal enum LogLevel
+        {
+            Info,
+            Warn,
+            Error,
+            Fatal
         }
     }
     internal static class Localizer
