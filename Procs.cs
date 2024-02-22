@@ -62,10 +62,10 @@ namespace NotepadPlus.Procs
         {
             foreach (string str in Directory.GetFiles(dirPath))
             {
-                FileInfo fi = new(str);
-                if (fi.Name.Contains(".npl"))
+                string fn = Path.GetFileName(str);
+                if (fn.Contains(".npl"))
                 {
-                    _langs.TryAdd( fi.Name.Replace(".npl",string.Empty), Lang.GetFromFile( str ) );
+                    _langs.TryAdd( fn.Replace(".npl",string.Empty), Lang.GetFromFile( str ) );
                 }
             }
         }

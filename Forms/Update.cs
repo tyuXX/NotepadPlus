@@ -14,6 +14,7 @@
 
         private void Update_Load( object sender, EventArgs e )
         {
+            string Version = new HttpClient().GetStringAsync( "" ).ToString() ?? string.Empty;
             label1.Text += Version.buildVersion;
             label2.Text += new HttpClient().GetStringAsync("");
         }
